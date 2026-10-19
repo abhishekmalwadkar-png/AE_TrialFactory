@@ -28,12 +28,25 @@
         </div>
       </div>
 
-      <!-- TABS CONTAINER (ONLY WHATSAPP IN SIDE MENU) -->
+      <!-- TABS CONTAINER (HOME & WHATSAPP IN SIDE MENU) -->
       <div class="sidebar-nav-wrapper">
         <nav class="sidebar-nav standalone-nav">
-          <!-- WHATSAPP TAB (ONLY ITEM IN SIDEBAR) -->
+          <!-- 1. HOME TAB (SEE UPLOAD PART & PIPELINE) -->
           <div class="tab-standalone-node">
-            <button class="nav-tab active" data-tab="whatsapp" title="WhatsApp Chat" id="tabBtnWhatsapp">
+            <button class="nav-tab active" data-tab="upload" title="Home - Upload Dump & Pipeline" id="tabBtnHome">
+              <div class="tab-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                  <polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              </div>
+              <span class="tab-label">Home</span>
+            </button>
+          </div>
+
+          <!-- 2. WHATSAPP TAB -->
+          <div class="tab-standalone-node">
+            <button class="nav-tab" data-tab="whatsapp" title="WhatsApp Discovery Chat" id="tabBtnWhatsapp">
               <div class="tab-icon-wrap whatsapp-badge-wrap">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
@@ -82,7 +95,7 @@
         <div class="center-pipeline-container" id="centerPipelineContainer">
           <div class="center-pipeline-flow">
             <!-- 1. Upload Step -->
-            <button class="pipeline-flow-node" data-tab="upload" onclick="switchTab('upload')" title="Step 1: Upload Dump">
+            <button class="pipeline-flow-node active" data-tab="upload" onclick="switchTab('upload')" title="Step 1: Upload Dump">
               <div class="pipeline-icon-card">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -116,7 +129,7 @@
         <div class="tabs-content-area">
           
           <!-- ================= TAB 1: UPLOAD (FIRST TAB) ================= -->
-          <div class="tab-pane" id="pane-upload">
+          <div class="tab-pane active" id="pane-upload">
             <div class="clean-tab-view upload-tab-wrapper">
               
               <div class="tab-pane-header">
@@ -354,7 +367,7 @@
           </div>
 
           <!-- ================= TAB 3: WHATSAPP (SIMULATE TICKET DUMP INTAKE & WORKFLOW DISCOVERY) ================= -->
-          <div class="tab-pane active" id="pane-whatsapp">
+          <div class="tab-pane" id="pane-whatsapp">
             <div class="clean-tab-view whatsapp-tab-wrapper">
               
               <div class="tab-pane-header">

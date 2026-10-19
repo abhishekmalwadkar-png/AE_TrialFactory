@@ -90,11 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   fetchAppState();
   fetchWorkflows();
-  switchTab('whatsapp');
+  switchTab('upload');
 });
 
 // -------------------------------------------------------------
-// TAB NAVIGATION (WhatsApp in Sidebar, Upload -> Simulate in Center)
+// TAB NAVIGATION (Home [Upload & Pipeline] & WhatsApp in Sidebar)
 // -------------------------------------------------------------
 function initTabNavigation() {
   const tabs = document.querySelectorAll('.nav-tab');
@@ -125,22 +125,28 @@ function initTabNavigation() {
     });
   }
 
-  // Home logo click
+  // Home brand logo click takes user to Home (Upload)
   const brandHome = document.getElementById('brandLogoHome');
   if (brandHome) {
-    brandHome.addEventListener('click', () => switchTab('whatsapp'));
+    brandHome.addEventListener('click', () => switchTab('upload'));
   }
 }
 
 function switchTab(tabName) {
+  const isHomeOrUpload = (tabName === 'upload' || tabName === 'home');
+  const isSimulate = (tabName === 'simulate');
+  const isWhatsApp = (tabName === 'whatsapp');
+
   // Update sidebar buttons
-  document.querySelectorAll('.nav-tab').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
-  });
+  const btnHome = document.getElementById('tabBtnHome');
+  const btnWa = document.getElementById('tabBtnWhatsapp');
+  if (btnHome) btnHome.classList.toggle('active', isHomeOrUpload || isSimulate);
+  if (btnWa) btnWa.classList.toggle('active', isWhatsApp);
 
   // Update center pipeline stepper nodes
   document.querySelectorAll('.pipeline-flow-node').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
+    const nodeTab = b.getAttribute('data-tab');
+    b.classList.toggle('active', (isHomeOrUpload && nodeTab === 'upload') || (isSimulate && nodeTab === 'simulate'));
   });
 
   // Center pipeline stepper is always visible across all tabs
@@ -154,13 +160,14 @@ function switchTab(tabName) {
     p.classList.remove('active');
   });
 
-  const activePane = document.getElementById(`pane-${tabName}`);
+  const paneId = isHomeOrUpload ? 'pane-upload' : `pane-${tabName}`;
+  const activePane = document.getElementById(paneId);
   if (activePane) {
     activePane.classList.add('active');
   }
 
   // If entering whatsapp tab, ensure simulator is initialized and scrolled
-  if (tabName === 'whatsapp') {
+  if (isWhatsApp) {
     if (!window.waInitialized) {
       initWhatsAppSimulator();
     }
