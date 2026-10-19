@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AE Trail Factory | AutomationEdge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    
+    <!-- SIDEBAR WITH ANIMATED PIPELINE FLOW -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand-logo" title="AE Trail Factory" id="brandLogoHome">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white" fill-opacity="0.95"/>
+            <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- TABS CONTAINER -->
+      <div class="sidebar-nav-wrapper">
+        
+        <!-- Animated Flow Stream Line connecting ONLY Upload -> Simulate -->
+        <div class="flow-section-group">
+          <div class="flow-track-line-short">
+            <div class="flow-energy-particle"></div>
+          </div>
+
+          <nav class="sidebar-nav flow-nav">
+            <!-- 1. UPLOAD TAB (IN FLOW) -->
+            <div class="tab-flow-node">
+              <button class="nav-tab active" data-tab="upload" title="Step 1: Upload Dump" id="tabBtnUpload">
+                <div class="tab-icon-wrap">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+                <span class="tab-label">Upload</span>
+              </button>
+              <div class="node-arrow-pulse">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+
+            <!-- 2. SIMULATE TAB (IN FLOW) -->
+            <div class="tab-flow-node">
+              <button class="nav-tab" data-tab="simulate" title="Step 2: Simulate Workflows" id="tabBtnSimulate">
+                <div class="tab-icon-wrap">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                  </svg>
+                </div>
+                <span class="tab-label">Simulate</span>
+              </button>
+            </div>
+          </nav>
+        </div>
+
+        <!-- DIVIDER (SEPARATES PIPELINE FLOW FROM STANDALONE TABS) -->
+        <div class="sidebar-separator-line"></div>
+
+        <!-- STANDALONE TABS (WHATSAPP KEPT SEPARATE) -->
+        <nav class="sidebar-nav standalone-nav">
+          <!-- 3. WHATSAPP TAB (SEPARATE FROM FLOW) -->
+          <div class="tab-standalone-node">
+            <button class="nav-tab" data-tab="whatsapp" title="WhatsApp Chat" id="tabBtnWhatsapp">
+              <div class="tab-icon-wrap whatsapp-badge-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                </svg>
+                <span class="tab-pulse-dot"></span>
+              </div>
+              <span class="tab-label">WhatsApp</span>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="main-wrapper">
+      
+      <!-- TOP NAVBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="topbar-logo-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+              <polyline points="2 17 12 22 22 17"/>
+              <polyline points="2 12 12 17 22 12"/>
+            </svg>
+          </div>
+          <div class="topbar-title-group">
+            <h1 class="topbar-title">AE Trail Factory</h1>
+            <p class="topbar-subtitle">AutomationEdge Workflow Discovery &amp; Execution Pipeline</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <button class="topbar-icon-btn" id="topThemeBtn" title="Toggle Theme">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <main class="page-body">
+        
+        <div class="tabs-content-area">
+          
+          <!-- ================= TAB 1: UPLOAD (FIRST TAB) ================= -->
+          <div class="tab-pane active" id="pane-upload">
+            <div class="clean-tab-view upload-tab-wrapper">
+              
+              <div class="tab-pane-header">
+                <div>
+                  <h3 class="pane-title">Upload Ticket Dump</h3>
+                  <p class="pane-desc">Upload IT tickets export, incident logs, or SOP documentation to discover candidate AutomationEdge workflows.</p>
+                </div>
+                <div class="flow-step-tag">
+                  <span class="step-badge">STAGE 1</span>
+                  <span>Intake &amp; Ingestion</span>
+                </div>
+              </div>
+
+              <!-- UPLOAD BOX CARD -->
+              <div class="upload-interactive-card">
+                
+                <div class="dropzone-box" id="dropzoneBox">
+                  <input type="file" id="fileInput" accept=".csv,.xlsx,.json,.txt" style="display:none">
+                  
+                  <div class="upload-hero-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                  </div>
+                  
+                  <h4 class="upload-heading">Upload</h4>
+                  
+                  <!-- Selected Demo File Details -->
+                  <div class="sample-file-preview">
+                    <div class="file-icon-box">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
+                    <div class="file-text-col">
+                      <strong class="file-name" id="displayFileName">OTRS_Tickets_Overview_v7.xlsx</strong>
+                      <span class="file-meta">450 tickets &middot; 189 KB &middot; OTRS ITSM Dump (.xlsx)</span>
+                    </div>
+                    <span class="file-ready-tag">Ready for Ingestion</span>
+                  </div>
+
+                  <!-- USER EMAIL OPTION -->
+                  <div class="upload-email-card">
+                    <label for="userEmailInput" class="upload-email-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                      </svg>
+                      <span>Email:</span>
+                    </label>
+                    <div class="upload-email-input-wrap">
+                      <div class="email-icon-prefix">@</div>
+                      <input type="email" id="userEmailInput" class="upload-email-field" placeholder="suhas.kajawe@automationedge.com" value="suhas.kajawe@automationedge.com" required>
+                    </div>
+                  </div>
+
+                  <!-- ACTION BUTTON -->
+                  <div class="upload-btn-row">
+                    <button class="btn-primary btn-upload-dump" id="btnTriggerUpload">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                      </svg>
+                      <span>Upload Dump</span>
+                    </button>
+                    <button class="btn-outline" id="btnSelectCustomFile" onclick="document.getElementById('fileInput').click()">
+                      <span>Browse Local File</span>
+                    </button>
+                  </div>
+
+                </div>
+
+                <!-- PROGRESS BAR CONTAINER (SHOWS ON CLICK) -->
+                <div class="upload-progress-container" id="uploadProgressContainer" style="display:none;">
+                  <div class="progress-header-row">
+                    <div class="progress-status-title">
+                      <span class="spinner-dot"></span>
+                      <strong id="uploadStatusText">Uploading Dump file</strong>
+                    </div>
+                    <span class="progress-pct" id="uploadProgressPct">0%</span>
+                  </div>
+
+                  <div class="progress-track-bar">
+                    <div class="progress-fill-glow" id="uploadProgressBarFill" style="width: 0%;"></div>
+                  </div>
+
+                  <div class="progress-footer-info">
+                    <span id="uploadProgressDetails">Reading records...</span>
+                    <span class="speed-meta">Transfer: 4.8 MB/s</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Quick Intake Summary info -->
+              <div class="intake-tips-grid">
+                <div class="tip-card">
+                  <div class="tip-num">1</div>
+                  <div>
+                    <strong>Automated Intake</strong>
+                    <p>Parses ticket subject, description, resolution steps, and timestamps.</p>
+                  </div>
+                </div>
+                <div class="tip-card">
+                  <div class="tip-num">2</div>
+                  <div>
+                    <strong>Taxonomy &amp; NLP Clustering</strong>
+                    <p>Categorizes tickets into automated workflow candidates.</p>
+                  </div>
+                </div>
+                <div class="tip-card">
+                  <div class="tip-num">3</div>
+                  <div>
+                    <strong>Simulate &amp; Execute</strong>
+                    <p>Shifts automatically to Simulate tab to review workflow recommendations.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= TAB 2: SIMULATE (SHOWS RESULTS) ================= -->
+          <div class="tab-pane" id="pane-simulate">
+            <div class="clean-tab-view simulate-tab-wrapper">
+              
+              <div class="tab-pane-header">
+                <div>
+                  <h3 class="pane-title">Simulation Results &amp; Recommended Workflows</h3>
+                  <p class="pane-desc">Analysis complete! Based on your uploaded ticket dump, here are the AutomationEdge workflows available to call.</p>
+                </div>
+                <div class="header-actions">
+                  <button class="btn-outline" id="btnReSimulate" onclick="runSimulationSequence()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    <span>Re-run Simulation</span>
+                  </button>
+                  <button class="btn-primary" onclick="switchTab('upload')">
+                    <span>Upload Another Dump</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- READY TO SIMULATE PROMPT (SHOWN AFTER UPLOAD UNTIL USER CLICKS SIMULATE) -->
+              <div class="simulate-ready-card" id="simulateReadyCard">
+                <div class="sim-ready-icon-wrap">
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polygon points="10 8 16 12 10 16 10 8" fill="#E8590C"/>
+                  </svg>
+                </div>
+                <h4 class="sim-ready-title">Ready to Simulate Workflows</h4>
+                <p class="sim-ready-desc">Ticket dump uploaded successfully. Click Simulate below to start the DiscoveryEdge workflow analysis and candidate discovery.</p>
+                <button class="btn-primary btn-run-simulate-cta" id="btnTriggerSimulation" onclick="startManualSimulation()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3" fill="currentColor"/></svg>
+                  <span>Simulate</span>
+                </button>
+              </div>
+
+              <!-- SIMULATION IN-PROGRESS BANNER (Shown during simulated analysis) -->
+              <div class="simulating-banner" id="simulatingBanner" style="display:none;">
+                <div class="sim-spinner"></div>
+                <div class="sim-text-col">
+                  <h4 id="simStageText">Analyzing tickets &amp; clustering taxonomy...</h4>
+                  <p>Matching candidate processes against AutomationEdge Process Studio library...</p>
+                </div>
+              </div>
+
+              <!-- SIMULATION RESULTS (HIDDEN UNTIL USER CLICKS SIMULATE) -->
+              <div id="simResultsContent" style="display:none;">
+                <!-- SIMULATION RESULTS SUMMARY METRICS -->
+                <div class="sim-results-metrics" id="simMetricsCards">
+                  <div class="sim-metric-box">
+                    <span class="m-label">Workflows Identified</span>
+                    <strong class="m-val highlight-orange" id="mTotalWorkflows">5</strong>
+                    <span class="m-sub">Ready to deploy</span>
+                  </div>
+                  <div class="sim-metric-box">
+                    <span class="m-label">Automation Coverage</span>
+                    <strong class="m-val highlight-green" id="mCoverage">91%</strong>
+                    <span class="m-sub">410 of 450 tickets</span>
+                  </div>
+                  <div class="sim-metric-box">
+                    <span class="m-label">Time Saved / Month</span>
+                    <strong class="m-val" id="mTimeSaved">412 hrs</strong>
+                    <span class="m-sub">FTE capacity unlocked</span>
+                  </div>
+                  <div class="sim-metric-box">
+                    <span class="m-label">Projected Monthly ROI</span>
+                    <strong class="m-val highlight-orange" id="mRoi">₹24,72,000</strong>
+                    <span class="m-sub">At ₹1,500/hr blended IT rate</span>
+                  </div>
+                </div>
+
+                <!-- WORKFLOW CARDS LIST ("WHICH WORKFLOW CAN WE CALL") -->
+                <div class="workflows-section-title">
+                  <h4>Recommended AutomationEdge Workflows</h4>
+                  <span class="workflow-count-badge">5 High-ROI Workflows Discovered</span>
+                </div>
+
+                <div class="workflows-cards-grid" id="workflowsCardsContainer">
+                  <!-- Dynamically rendered by app.js -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= TAB 3: WHATSAPP (SEPARATE & INTEGRATED WITH DIRECTLINE WEBCHAT) ================= -->
+          <div class="tab-pane" id="pane-whatsapp">
+            <div class="clean-tab-view whatsapp-tab-wrapper">
+              
+              <div class="tab-pane-header">
+                <div>
+                  <h3 class="pane-title">WhatsApp Live Chat &amp; AgentFlow DirectLine</h3>
+                  <p class="pane-desc">Chat directly with the AutomationEdge AgentFlow bot using DirectLine WebChat in an authentic WhatsApp interface.</p>
+                </div>
+                <div class="header-actions">
+                  <div class="wa-status-badge">
+                    <span class="pulse-indicator"></span>
+                    <span id="agentFlowConnectionStatus">Ready</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- TWO COLUMN LAYOUT: WHATSAPP CHAT INTERFACE ON LEFT SIDE (COMPACT & VISIBLE) -->
+              <div class="whatsapp-layout-split">
+                
+                <!-- LEFT SIDE: COMPACT WHATSAPP CHAT SHELL -->
+                <div class="whatsapp-left-col">
+                  <div class="whatsapp-chat-shell">
+                    
+                    <!-- WhatsApp Top Header -->
+                    <div class="whatsapp-shell-header">
+                      <div class="wa-shell-left">
+                        <div class="wa-shell-avatar">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        </div>
+                        <div class="wa-shell-info">
+                          <div class="wa-shell-name">
+                            <span>AE AgentFlow Bot</span>
+                            <span class="wa-verified-pill" title="Verified Enterprise Bot">✓</span>
+                          </div>
+                          <div class="wa-shell-sub" id="waBotSubStatus">online &middot; directline connected</div>
+                        </div>
+                      </div>
+                      <div class="wa-shell-right">
+                        <button class="wa-tool-btn" title="Reload Chat Session" onclick="connectAgentFlowWebChat()">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        </button>
+                        <button class="wa-tool-btn" title="More options">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- WhatsApp Chat Body with BotFramework WebChat container inside -->
+                    <div class="whatsapp-shell-body">
+                      <!-- The required BotFramework WebChat container -->
+                      <div id="webchat" style="height:520px"></div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- RIGHT SIDE: AGENTFLOW CONFIGURATION & CONTROLS -->
+                <div class="whatsapp-right-col">
+                  
+                  <!-- AGENTFLOW PUBLIC ADDRESS CONFIGURATION BAR -->
+                  <div class="agentflow-config-panel">
+                    <div class="config-input-group">
+                      <label for="agentFlowAddressInput" class="config-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <span>AgentFlow Public Address:</span>
+                      </label>
+                      <div class="config-input-row">
+                        <input type="text" id="agentFlowAddressInput" class="config-text-input clean-full-input" placeholder="Enter AgentFlow public address (e.g. 10.41.5.39:8099)" value="10.41.5.39:8099">
+                      </div>
+                      <div style="margin-top: 10px;">
+                        <button class="btn-primary" id="btnConnectAgentFlow" onclick="connectAgentFlowWebChat()" style="width: 100%; justify-content: center;">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                          <span>Connect DirectLine</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- DIRECTLINE CONNECTION INFO CARD -->
+                  <div class="wa-info-card">
+                    <h4>DirectLine WebChat Features</h4>
+                    <ul class="wa-features-list">
+                      <li><span>🔒</span><span>Token fetched securely via <code>/my-backend/start-bot-chat</code></span></li>
+                      <li><span>💬</span><span>Bi-directional streaming chat with AutomationEdge EUC workflows</span></li>
+                      <li><span>⚡</span><span>Instant responses with Process Studio bot triggers</span></li>
+                    </ul>
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- WORKFLOW EXECUTION RECEIPT MODAL -->
+  <div class="modal-overlay" id="wfExecModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-avatar" style="background: #10B981;">⚡</div>
+          <div>
+            <h3 class="modal-candidate-name" id="modalWfTitle">Workflow Executed</h3>
+            <p class="modal-candidate-role" id="modalWfSubtitle">AutomationEdge Process Studio Dispatch</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeWfModal()">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="wf-receipt-box">
+          <div class="receipt-row">
+            <span class="r-label">Job Execution ID:</span>
+            <strong class="r-val" id="receiptJobId">#AE-JOB-849201</strong>
+          </div>
+          <div class="receipt-row">
+            <span class="r-label">Workflow:</span>
+            <code class="r-val" id="receiptWfFile">WF_ActiveDirectory_User_Provisioning.psw</code>
+          </div>
+          <div class="receipt-row">
+            <span class="r-label">Cluster:</span>
+            <span class="r-val" id="receiptServer">AE server (t4)</span>
+          </div>
+          <div class="receipt-row">
+            <span class="r-label">Execution Time:</span>
+            <span class="r-val text-success" id="receiptDuration">1.42s &middot; 0 errors</span>
+          </div>
+          <div class="receipt-row">
+            <span class="r-label">Status:</span>
+            <span class="c-tag badge-success">COMPLETED_SUCCESS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="closeWfModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toastMessage"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

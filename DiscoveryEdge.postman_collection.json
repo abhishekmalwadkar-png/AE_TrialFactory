@@ -1,0 +1,192 @@
+{
+  "info": {
+    "name": "DiscoveryEdge API",
+    "description": "Upload a ticket dump, follow the job, and fetch the results.\n\nOrder: 1. Login (saves the token) -> 2. Upload tickets (saves job_id) -> 3. Job status (repeat until status = succeeded) -> 4. Download results.\n\nSet the collection variables base_url, email and password first. Requests that send the Bearer token do not need a CSRF token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "base_url", "value": "https://employers-wholesale-nails-hoped.trycloudflare.com" },
+    { "key": "email", "value": "suhas.kajawe@automationedge.com" },
+    { "key": "password", "value": "Admin@123" },
+    { "key": "token", "value": "" },
+    { "key": "job_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "0. Meta",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] }
+          }
+        },
+        {
+          "name": "List providers",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/meta/providers", "host": ["{{base_url}}"], "path": ["meta", "providers"] }
+          }
+        },
+        {
+          "name": "List verticals",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/meta/verticals", "host": ["{{base_url}}"], "path": ["meta", "verticals"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('login ok', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "if (body.token) { pm.collectionVariables.set('token', body.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/auth/me", "host": ["{{base_url}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Upload tickets",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('job created', () => pm.response.to.have.status(201));",
+              "const body = pm.response.json();",
+              "if (body.id) { pm.collectionVariables.set('job_id', body.id); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "file", "type": "file", "src": "", "description": "Pick the ticket dump (.xlsx / .csv / .json / .eml / .mbox)" },
+            { "key": "source_type", "value": "itsm", "type": "text", "description": "itsm | email | alert" },
+            { "key": "provider", "value": "otrs", "type": "text", "description": "See GET /meta/providers" },
+            { "key": "currency", "value": "USD", "type": "text" },
+            { "key": "hourly_cost", "value": "25", "type": "text", "description": "Required, > 0" },
+            { "key": "minutes_per_ticket", "value": "15", "type": "text", "description": "Required, > 0" },
+            { "key": "vertical", "value": "it_support", "type": "text", "disabled": true, "description": "Optional, see GET /meta/verticals" },
+            { "key": "use_cloud_narrative", "value": "false", "type": "text", "disabled": true }
+          ]
+        },
+        "url": { "raw": "{{base_url}}/jobs", "host": ["{{base_url}}"], "path": ["jobs"] }
+      }
+    },
+    {
+      "name": "3. Jobs",
+      "item": [
+        {
+          "name": "Job status",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}"] }
+          }
+        },
+        {
+          "name": "List my jobs",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs", "host": ["{{base_url}}"], "path": ["jobs"] }
+          }
+        },
+        {
+          "name": "Workflow candidates",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}/workflows", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "workflows"] }
+          }
+        },
+        {
+          "name": "Delete job",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Download results",
+      "item": [
+        {
+          "name": "Opportunities JSON (UI data)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}/download/json", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "download", "json"] }
+          }
+        },
+        {
+          "name": "Report (markdown)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}/download/report", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "download", "report"] }
+          }
+        },
+        {
+          "name": "Narrative (markdown)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}/download/narrative", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "download", "narrative"] }
+          }
+        },
+        {
+          "name": "Excel (xlsx) - use Send and Download",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}/download/xlsx", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "download", "xlsx"] }
+          }
+        },
+        {
+          "name": "PowerPoint (pptx) - use Send and Download",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/jobs/{{job_id}}/download/pptx", "host": ["{{base_url}}"], "path": ["jobs", "{{job_id}}", "download", "pptx"] }
+          }
+        }
+      ]
+    }
+  ]
+}
