@@ -146,86 +146,62 @@ body {
   align-items: center;
 }
 
-/* Vertical Animated Flow Track Line (Strictly connects Upload -> Simulate) */
-.flow-track-line,
-.flow-track-line-short {
-  position: absolute;
-  top: 24px;
-  bottom: 24px;
-  width: 2px;
-  background: linear-gradient(180deg, rgba(232, 89, 12, 0.25) 0%, rgba(232, 89, 12, 0.6) 50%, rgba(232, 89, 12, 0.25) 100%);
-  z-index: 1;
+/* Clean Vertical Animated Flow Track Line (Strictly connects Upload -> Simulate) */
+.flow-nav {
+  gap: 0;
+}
+
+.flow-connector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  position: relative;
+  margin: 3px 0;
   pointer-events: none;
 }
 
-.flow-energy-particle {
+.flow-connector-track {
+  width: 2px;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(180deg, rgba(232, 89, 12, 0.2) 0%, rgba(232, 89, 12, 0.45) 50%, rgba(232, 89, 12, 0.2) 100%);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+body.dark-mode .flow-connector-track {
+  background: linear-gradient(180deg, rgba(232, 89, 12, 0.15) 0%, rgba(232, 89, 12, 0.55) 50%, rgba(232, 89, 12, 0.15) 100%);
+}
+
+.flow-connector-pulse {
   position: absolute;
-  top: 0;
-  left: -2px;
-  width: 6px;
-  height: 16px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #FF9933 0%, #E8590C 100%);
-  box-shadow: 0 0 8px #FF6600, 0 0 14px rgba(232, 89, 12, 0.8);
-  animation: flowStreamDown 2.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  top: -14px;
+  left: 0;
+  width: 2px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 153, 51, 0) 0%, rgba(255, 153, 51, 0.9) 60%, #E8590C 100%);
+  box-shadow: 0 0 6px rgba(232, 89, 12, 0.75), 0 0 10px rgba(255, 153, 51, 0.4);
+  animation: flowConnectorBeam 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@keyframes flowStreamDown {
-  0% { top: 0%; opacity: 0; transform: scaleY(0.6); }
-  15% { opacity: 1; transform: scaleY(1.2); }
-  85% { opacity: 1; transform: scaleY(1.2); }
-  100% { top: 92%; opacity: 0; transform: scaleY(0.6); }
-}
-
-/* Divider that cleanly separates pipeline flow from standalone WhatsApp & Connectivity */
-.sidebar-separator-line {
-  width: 38px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--border-light) 50%, transparent 100%);
-  margin: 14px 0;
-  position: relative;
-}
-
-.sidebar-separator-line::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background-color: var(--border-light);
-}
-
-.sidebar-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
-.tab-flow-node,
-.tab-standalone-node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.node-arrow-pulse {
-  color: var(--primary);
-  opacity: 0.45;
-  margin-top: 2px;
-  animation: pulseArrow 1.6s infinite ease-in-out;
-}
-
-@keyframes pulseArrow {
-  0%, 100% { transform: translateY(0); opacity: 0.35; }
-  50% { transform: translateY(3px); opacity: 0.9; }
+@keyframes flowConnectorBeam {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(46px);
+    opacity: 0;
+  }
 }
 
 .nav-tab {
