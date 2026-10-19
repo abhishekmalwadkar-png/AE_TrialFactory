@@ -601,11 +601,11 @@ app.post('/api/workflows/call', (req, res) => {
 // Behind upload: executes POST /auth/login -> POST /jobs -> GET /jobs/:id -> GET /jobs/:id/workflows
 // =========================================================================
 app.post('/api/discovery/upload', upload.single('file'), async (req, res) => {
-  const userEmail = (req.body.email && req.body.email !== 'you@automationedge.ai') 
-    ? req.body.email 
+  const userEmail = (req.body.email && req.body.email.trim()) 
+    ? req.body.email.trim() 
     : 'suhas.kajawe@automationedge.com';
-  const password = (req.body.password && req.body.password !== 'YourPassword') 
-    ? req.body.password 
+  const password = (req.body.password && req.body.password.trim()) 
+    ? req.body.password.trim() 
     : 'Admin@123';
   const baseUrl = process.env.DISCOVERY_EDGE_URL || 'https://employers-wholesale-nails-hoped.trycloudflare.com';
   const otrsDefaultPath = path.join(__dirname, 'OTRS_Tickets_Overview_v7.xlsx');

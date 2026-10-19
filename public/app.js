@@ -197,6 +197,24 @@ function initUploadFeature() {
 let stagedUploadFile = null;
 let stagedTargetName = 'OTRS_Tickets_Overview_v7.xlsx';
 let stagedUserEmail = 'suhas.kajawe@automationedge.com';
+let stagedUserPassword = 'Admin@123';
+
+function togglePasswordVisibility() {
+  const pwdInput = document.getElementById('userPasswordInput');
+  const eyeIcon = document.getElementById('eyeIcon');
+  if (!pwdInput) return;
+  if (pwdInput.type === 'password') {
+    pwdInput.type = 'text';
+    if (eyeIcon) {
+      eyeIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+    }
+  } else {
+    pwdInput.type = 'password';
+    if (eyeIcon) {
+      eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+    }
+  }
+}
 
 function startSimulatedUpload(customFileName, fileObject) {
   const progressContainer = document.getElementById('uploadProgressContainer');
@@ -212,7 +230,9 @@ function startSimulatedUpload(customFileName, fileObject) {
   stagedUploadFile = fileObject || null;
 
   const emailInput = document.getElementById('userEmailInput');
+  const pwdInput = document.getElementById('userPasswordInput');
   stagedUserEmail = emailInput && emailInput.value.trim() ? emailInput.value.trim() : 'suhas.kajawe@automationedge.com';
+  stagedUserPassword = pwdInput && pwdInput.value.trim() ? pwdInput.value.trim() : 'Admin@123';
 
   // Show local upload progress bar
   progressContainer.style.display = 'block';
@@ -318,6 +338,7 @@ function startManualSimulation() {
     formData.append('file', stagedUploadFile, stagedUploadFile.name);
   }
   formData.append('email', stagedUserEmail);
+  formData.append('password', stagedUserPassword);
   formData.append('fileName', stagedTargetName);
 
   fetch('/api/discovery/upload', {

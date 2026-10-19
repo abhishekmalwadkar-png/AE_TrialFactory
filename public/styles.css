@@ -2510,104 +2510,145 @@ body.dark-mode .empty-state-icon {
   border-radius: var(--radius-full);
 }
 
-/* USER EMAIL INPUT OPTION (FOR DISCOVERYEDGE API) */
-.upload-email-card {
+/* DISCOVERYEDGE CREDENTIALS INPUT (EMAIL & PASSWORD) */
+.upload-credentials-card {
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   background: var(--surface-subtle);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: 16px 20px;
   margin: 18px 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   text-align: left;
   transition: all var(--transition-fast);
 }
 
-.upload-email-card:focus-within {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.12);
-  background: var(--surface-card);
+.upload-credentials-card:focus-within {
+  border-color: rgba(232, 89, 12, 0.4);
+  box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.08);
 }
 
-.upload-email-label {
+.upload-cred-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+}
+
+.upload-cred-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 13px;
   font-weight: 700;
   color: var(--text-main);
-  cursor: pointer;
 }
 
-.upload-email-input-wrap {
+.cred-badge-tag {
+  background: rgba(232, 89, 12, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(232, 89, 12, 0.2);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.upload-cred-fields-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 580px) {
+  .upload-cred-fields-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.upload-cred-field-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.upload-cred-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.upload-cred-input-wrap {
   display: flex;
   align-items: center;
   position: relative;
   width: 100%;
 }
 
-.email-icon-prefix {
+.cred-icon-prefix {
   position: absolute;
-  left: 12px;
+  left: 11px;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   pointer-events: none;
 }
 
-.upload-email-field {
+.upload-cred-field {
   width: 100%;
-  padding: 10px 14px 10px 36px;
+  padding: 9px 12px 9px 32px;
   background: var(--surface-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--text-main);
   outline: none;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  transition: border-color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
-body.dark-mode .upload-email-field {
+.upload-cred-input-wrap:has(.btn-toggle-password) .upload-cred-field {
+  padding-right: 36px;
+}
+
+body.dark-mode .upload-cred-field {
   background: #1A2234;
   border-color: #2D3748;
 }
 
-.upload-email-field:focus {
+.upload-cred-field:focus {
   border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(232, 89, 12, 0.15);
 }
 
-.email-badge-tag {
+.btn-toggle-password {
   position: absolute;
   right: 8px;
-  background: rgba(232, 89, 12, 0.12);
-  color: var(--primary);
-  border: 1px solid rgba(232, 89, 12, 0.25);
-  font-size: 10.5px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: var(--radius-full);
-  pointer-events: none;
-  letter-spacing: 0.3px;
-}
-
-.upload-email-subtext {
-  font-size: 11px;
+  background: transparent;
+  border: none;
   color: var(--text-muted);
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 5px;
-  flex-wrap: wrap;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color var(--transition-fast);
 }
 
-.upload-email-subtext code {
-  background: rgba(0, 0, 0, 0.05);
-  padding: 1px 5px;
+.btn-toggle-password:hover {
+  color: var(--primary);
+}
   border-radius: 3px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
