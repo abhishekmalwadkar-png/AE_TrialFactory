@@ -149,10 +149,10 @@ function switchTab(tabName) {
     b.classList.toggle('active', (isHomeOrUpload && nodeTab === 'upload') || (isSimulate && nodeTab === 'simulate'));
   });
 
-  // Center pipeline stepper is always visible across all tabs
+  // Center pipeline stepper is only visible on Home / Upload & Simulate, hidden on WhatsApp
   const centerFlow = document.getElementById('centerPipelineContainer');
   if (centerFlow) {
-    centerFlow.style.display = 'flex';
+    centerFlow.style.display = isWhatsApp ? 'none' : 'flex';
   }
 
   // Update panes
