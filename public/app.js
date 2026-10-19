@@ -137,6 +137,16 @@ function switchTab(tabName) {
     b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
   });
 
+  // Update center pipeline stepper nodes
+  document.querySelectorAll('.pipeline-flow-node').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
+  });
+
+  const centerFlow = document.getElementById('centerPipelineContainer');
+  if (centerFlow) {
+    centerFlow.style.display = (tabName === 'upload' || tabName === 'simulate') ? 'flex' : 'none';
+  }
+
   // Update panes
   document.querySelectorAll('.tab-pane').forEach(p => {
     p.classList.remove('active');

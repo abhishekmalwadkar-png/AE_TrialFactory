@@ -122,6 +122,41 @@
       <!-- CONTENT BODY -->
       <main class="page-body">
         
+        <!-- CENTER STAGE PIPELINE FLOW (UPLOAD -> SIMULATE) -->
+        <div class="center-pipeline-container" id="centerPipelineContainer">
+          <div class="center-pipeline-flow">
+            <!-- 1. Upload Step -->
+            <button class="pipeline-flow-node active" data-tab="upload" onclick="switchTab('upload')" title="Step 1: Upload Dump">
+              <div class="pipeline-icon-card">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <span class="pipeline-node-label">Upload</span>
+            </button>
+
+            <!-- Horizontal Flow Connector with Animated Pulse Beam -->
+            <div class="pipeline-flow-connector" aria-hidden="true">
+              <div class="pipeline-connector-track">
+                <div class="pipeline-connector-pulse"></div>
+              </div>
+            </div>
+
+            <!-- 2. Simulate Step -->
+            <button class="pipeline-flow-node" data-tab="simulate" onclick="switchTab('simulate')" title="Step 2: Simulate Workflows">
+              <div class="pipeline-icon-card">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 6v6l4 2"/>
+                </svg>
+              </div>
+              <span class="pipeline-node-label">Simulate</span>
+            </button>
+          </div>
+        </div>
+
         <div class="tabs-content-area">
           
           <!-- ================= TAB 1: UPLOAD (FIRST TAB) ================= -->
