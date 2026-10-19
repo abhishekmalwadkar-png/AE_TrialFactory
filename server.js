@@ -134,9 +134,9 @@ let trialState = {
       sender: 'bot',
       type: 'template',
       time: '11:28 AM',
-      title: '🚨 AE Trail Factory: Action Required',
-      text: 'Good morning Jessica,\nNew onboarding request received for *Kunal Patel* (Full Stack DevOps Engineer - Engineering).\n\n• Ticket: #INC0048291\n• Systems: Active Directory, M365, OrangeHRM\n• HR Approval: Completed ✅',
-      buttons: ['Review & Approve', 'Reject Provisioning', 'View in Portal']
+      title: '🤖 AE DiscoveryEdge Assistant',
+      text: 'Welcome to AutomationEdge DiscoveryEdge!\n\nSend *Hi* or tap below to discover which workflows can be created from your IT tickets.',
+      buttons: ['Hi']
     }
   ],
   connectivity: {
@@ -429,61 +429,84 @@ app.post('/api/state/reset', (req, res) => {
   res.json({ success: true, message: 'State reset successfully', data: trialState });
 });
 
-// 7. WhatsApp message sending / replying
+// 7. WhatsApp endpoints: GET messages and POST send
+app.get('/api/whatsapp/messages', (req, res) => {
+  res.json({ success: true, messages: trialState.whatsappMessages });
+});
+
 app.post('/api/whatsapp/send', (req, res) => {
   const { text } = req.body;
   if (!text) return res.status(400).json({ error: 'Text required' });
 
-  // Add user reply
-  trialState.whatsappMessages.push({
+  const userMsg = {
     id: Date.now(),
     sender: 'user',
     type: 'text',
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     text: text
-  });
+  };
 
-  // Automated bot response based on keywords
-  setTimeout(() => {
-    let botReplyText = "Thank you! AE Trail Factory received your response and updated the provisioning pipeline.";
-    let botTitle = "🤖 AE Automation Assistant";
-    let botButtons = [];
+  trialState.whatsappMessages.push(userMsg);
 
-    const lower = text.toLowerCase();
-    if (lower.includes('approve') || lower.includes('yes') || lower.includes('ok')) {
-      const kunal = trialState.candidates.find(c => c.name.includes('Kunal'));
-      if (kunal) {
-        kunal.status = 'Approved';
-        kunal.activeDirectory = true;
-        kunal.m365 = true;
-        kunal.orangeHrm = true;
-        kunal.laptopTicket = true;
-        recalculateStats();
-      }
-      botTitle = "✅ Approval Confirmed";
-      botReplyText = `Request for Kunal Patel has been approved. AutomationEdge workflow *WF_AD_Provisioning.psw* is now executing.`;
-      botButtons = ['View Funnel Progress', 'Check AE Server'];
-    } else if (lower.includes('status') || lower.includes('progress') || lower.includes('funnel')) {
-      botTitle = "📊 Pipeline Status";
-      botReplyText = `Current status:\n• Total candidates: ${trialState.stats.totalRecords}\n• Pending approvals: ${trialState.stats.pendingReview}\n• Provisioned: ${trialState.stats.approved}`;
-      botButtons = ['Approve Pending', 'Open Dashboard'];
-    } else if (lower.includes('reject') || lower.includes('no')) {
-      botTitle = "⚠️ Provisioning Paused";
-      botReplyText = `Request has been put on hold. Ticket #INC0048291 marked for secondary IT manager review.`;
-    }
+  const lower = text.trim().toLowerCase();
+  let botReplyText = "Thank you! DiscoveryEdge received your response.";
+  let botTitle = "🤖 AE Discovery Assistant";
+  let botButtons = [];
 
-    trialState.whatsappMessages.push({
-      id: Date.now() + 1,
-      sender: 'bot',
-      type: 'template',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      title: botTitle,
-      text: botReplyText,
-      buttons: botButtons
+  if (lower === 'hi' || lower === 'hello' || lower === 'hey' || lower.startsWith('hi ') || lower.startsWith('hello ')) {
+    botTitle = "📁 Please Upload IT Ticket Dump";
+    botReplyText = `Hello! I am your *AutomationEdge AI Discovery Assistant*.\n\nPlease share or attach your IT tickets dump (e.g. OTRS, ServiceNow, GLPI, Jira) to discover which candidate workflows can be created.`;
+    botButtons = ['📁 Attach OTRS_Tickets_Overview_v7.xlsx', '📊 Load Sample ITSM Dump (2,840 tickets)'];
+  } else if (lower.includes('attach') || lower.includes('otrs') || lower.includes('dump') || lower.includes('tickets') || lower.includes('load') || lower.includes('sample') || lower.includes('xlsx') || lower.includes('csv') || lower.includes('analyze')) {
+    botTitle = "📊 DiscoveryEdge: Workflows Created";
+    botReplyText = `✅ Ingested *OTRS_Tickets_Overview_v7.xlsx* (450 tickets).\nAI text clustering & IT taxonomy analysis completed.\n\n🚀 *Discovered Workflows that can be created:*\n\n1️⃣ *WF_Password_Reset_SelfService.psw*\n• Self-Service Domain, Email & Wifi Password Reset\n• Confidence: *98%* · 118 tickets/mo · *118 hrs saved*\n• Target: Active Directory & Cyberoam\n\n2️⃣ *WF_Employee_Separation_Offboarding.psw*\n• Automated Employee Separation & Credential Revocation\n• Confidence: *95%* · 74 tickets/mo · *88 hrs saved*\n• Target: AD, Exchange & Cyberoam\n\n3️⃣ *WF_AWS_VPN_Citrix_Access_Provisioning.psw*\n• AWS VPN & Citrix / Zscaler Network Access\n• Confidence: *94%* · 82 tickets/mo · *78 hrs saved*\n• Target: AWS, Citrix & Zscaler\n\n4️⃣ *WF_Software_Installation_Docker_VM.psw*\n• Software Setup, Docker Desktop & VM Provisioning\n• Confidence: *91%* · 65 tickets/mo · *72 hrs saved*\n• Target: Hyper-V & Docker Desktop\n\n5️⃣ *WF_ActiveDirectory_User_Provisioning.psw*\n• AD & Shared Repository Access Grant\n• Confidence: *93%* · 71 tickets/mo · *56 hrs saved*\n• Target: Active Directory & File Server\n\n💡 *Total Potential:* 412 hrs/mo saved · Est. ROI: ₹24,72,000/mo`;
+    botButtons = ['⚡ Generate Workflows in Studio', '🚀 Run Password Reset Workflow', '🔄 Analyze New Dump'];
+
+    trialState.simulationLogs.push({
+      timestamp: new Date().toLocaleTimeString(),
+      level: 'SUCCESS',
+      message: 'WhatsApp Bot processed ticket dump OTRS_Tickets_Overview_v7.xlsx: 5 workflow candidates generated.'
     });
-  }, 700);
+  } else if (lower.includes('generate') || lower.includes('run') || lower.includes('execute') || lower.includes('studio') || lower.includes('password reset')) {
+    botTitle = "⚡ Workflow Dispatched to AE server (t4)";
+    botReplyText = `Dispatched *WF_Password_Reset_SelfService.psw* to AutomationEdge cluster *AE server (t4)*:\n\n• Job Execution ID: *#AE-JOB-948102*\n• Execution Time: *1.18s · 0 errors*\n• Status: *COMPLETED_SUCCESS ✅*\n• Target Systems: Active Directory & Cyberoam\n• Resolution: Domain & Wifi credentials reset successfully.`;
+    botButtons = ['📁 Analyze Another Dump', '🔄 Reset Demo'];
 
-  res.json({ success: true, messages: trialState.whatsappMessages });
+    trialState.simulationLogs.push({
+      timestamp: new Date().toLocaleTimeString(),
+      level: 'SUCCESS',
+      message: 'WhatsApp Bot executed WF_Password_Reset_SelfService.psw on AE server (t4) in 1.18s.'
+    });
+  } else if (lower.includes('reset')) {
+    botTitle = "🔄 Discovery Session Reset";
+    botReplyText = `Session reset to initial state.\nSend *Hi* to discover automatable workflows from a new ticket dump!`;
+    botButtons = ['Hi'];
+  } else {
+    botTitle = "🤖 AE Discovery Assistant";
+    botReplyText = `Received: "${text}".\nSend *Hi* to start workflow discovery from your IT ticket dump.`;
+    botButtons = ['Hi'];
+  }
+
+  const botMsg = {
+    id: Date.now() + 1,
+    sender: 'bot',
+    type: 'template',
+    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    title: botTitle,
+    text: botReplyText,
+    buttons: botButtons
+  };
+
+  trialState.whatsappMessages.push(botMsg);
+
+  res.json({
+    success: true,
+    userMessage: userMsg,
+    botMessage: botMsg,
+    messages: trialState.whatsappMessages,
+    stats: trialState.stats,
+    candidates: trialState.candidates
+  });
 });
 
 // 8. Connectivity Endpoints for AE Server (t3) and AE Server (t4)

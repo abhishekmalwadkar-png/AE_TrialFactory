@@ -86,14 +86,15 @@ const DEFAULT_WORKFLOWS = [
 document.addEventListener('DOMContentLoaded', () => {
   initTabNavigation();
   initUploadFeature();
-  initAgentFlowWebChat();
+  initWhatsAppSimulator();
   initThemeToggle();
   fetchAppState();
   fetchWorkflows();
+  switchTab('whatsapp');
 });
 
 // -------------------------------------------------------------
-// TAB NAVIGATION (Upload -> Simulate -> WhatsApp -> Connectivity)
+// TAB NAVIGATION (WhatsApp in Sidebar, Upload -> Simulate in Center)
 // -------------------------------------------------------------
 function initTabNavigation() {
   const tabs = document.querySelectorAll('.nav-tab');
@@ -127,7 +128,7 @@ function initTabNavigation() {
   // Home logo click
   const brandHome = document.getElementById('brandLogoHome');
   if (brandHome) {
-    brandHome.addEventListener('click', () => switchTab('upload'));
+    brandHome.addEventListener('click', () => switchTab('whatsapp'));
   }
 }
 
@@ -142,9 +143,10 @@ function switchTab(tabName) {
     b.classList.toggle('active', b.getAttribute('data-tab') === tabName);
   });
 
+  // Center pipeline stepper is always visible across all tabs
   const centerFlow = document.getElementById('centerPipelineContainer');
   if (centerFlow) {
-    centerFlow.style.display = (tabName === 'upload' || tabName === 'simulate') ? 'flex' : 'none';
+    centerFlow.style.display = 'flex';
   }
 
   // Update panes
@@ -157,16 +159,12 @@ function switchTab(tabName) {
     activePane.classList.add('active');
   }
 
-  // If entering simulate tab, do not auto-run; user will click Simulate
-  if (tabName === 'simulate') {
-    // Keep current ready state or results
-  }
-
-  // If entering whatsapp tab, ensure DirectLine WebChat connects
+  // If entering whatsapp tab, ensure simulator is initialized and scrolled
   if (tabName === 'whatsapp') {
-    if (!window.webChatInitialized) {
-      connectAgentFlowWebChat();
+    if (!window.waInitialized) {
+      initWhatsAppSimulator();
     }
+    setTimeout(scrollWhatsAppToBottom, 120);
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -617,94 +615,262 @@ function showToast(msg) {
 }
 
 // -------------------------------------------------------------
-// WHATSAPP & AGENTFLOW DIRECTLINE WEBCHAT
+// WHATSAPP PROCESS SIMULATOR (SIMULATES FROM MESSAGE "HI")
 // -------------------------------------------------------------
-window.webChatInitialized = false;
+window.waInitialized = false;
 
-function initAgentFlowWebChat() {
-  const addressInput = document.getElementById('agentFlowAddressInput');
-  const previewEl = document.getElementById('previewDirectLineUrl');
-
-  if (addressInput) {
-    // Dynamically update the DirectLine URL preview when user types address
-    addressInput.addEventListener('input', () => {
-      let raw = addressInput.value.trim().replace(/^https?:\/\//i, '').replace(/\/.*$/, '').trim();
-      if (previewEl) {
-        previewEl.textContent = `https://${raw || '<agentflow public address>'}/flows/euc/v3/directline`;
-      }
-    });
-
-    // Pressing Enter triggers connect
-    addressInput.addEventListener('keypress', (e) => {
+function initWhatsAppSimulator() {
+  const inputEl = document.getElementById('waChatInput');
+  if (inputEl && !inputEl.dataset.bound) {
+    inputEl.dataset.bound = "true";
+    inputEl.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
-        connectAgentFlowWebChat();
+        e.preventDefault();
+        handleWhatsAppSend();
       }
     });
+  }
+
+  // Load existing messages or start clean
+  fetchWhatsAppMessages();
+  window.waInitialized = true;
+}
+
+async function fetchWhatsAppMessages() {
+  try {
+    const res = await fetch('/api/whatsapp/messages');
+    const result = await res.json();
+    if (result.success && Array.isArray(result.messages)) {
+      renderWhatsAppMessages(result.messages);
+    }
+  } catch (err) {
+    // If offline or empty, render initial greeting
+    renderWhatsAppMessages([
+      {
+        id: 1,
+        sender: 'bot',
+        type: 'template',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        title: '🤖 AE AgentFlow Assistant',
+        text: 'Welcome to AutomationEdge AgentFlow WhatsApp!\n\nSend *Hi* or tap below to simulate our onboarding approval process.',
+        buttons: ['Hi']
+      }
+    ]);
   }
 }
 
-async function connectAgentFlowWebChat() {
-  const addressInput = document.getElementById('agentFlowAddressInput');
-  let rawAddress = addressInput ? addressInput.value.trim() : '10.41.5.39:8099';
+function renderWhatsAppMessages(messages) {
+  const feed = document.getElementById('waMessagesFeed');
+  if (!feed) return;
+  feed.innerHTML = '';
 
-  // Sanitize the user-entered address (remove protocol prefix or trailing slash)
-  let cleanAddress = rawAddress.replace(/^https?:\/\//i, '').replace(/\/.*$/, '').trim();
-  if (!cleanAddress) {
-    cleanAddress = '10.41.5.39:8099';
-    if (addressInput) addressInput.value = cleanAddress;
+  messages.forEach(msg => {
+    appendWhatsAppMessageDOM(msg);
+  });
+
+  scrollWhatsAppToBottom();
+}
+
+function appendWhatsAppMessageDOM(msg) {
+  const feed = document.getElementById('waMessagesFeed');
+  if (!feed) return;
+
+  const isUser = msg.sender === 'user';
+  const row = document.createElement('div');
+  row.className = `wa-msg-row ${isUser ? 'wa-msg-user' : 'wa-msg-bot'}`;
+
+  let contentHtml = '';
+  if (isUser) {
+    contentHtml = `
+      <div class="wa-bubble wa-bubble-user">
+        <div class="wa-msg-text">${escapeHtml(msg.text)}</div>
+        <div class="wa-msg-meta">
+          <span class="wa-msg-time">${msg.time || 'Just now'}</span>
+          <span class="wa-checkmarks">&check;&check;</span>
+        </div>
+      </div>
+    `;
+  } else {
+    // Bot message
+    let buttonsHtml = '';
+    if (Array.isArray(msg.buttons) && msg.buttons.length > 0) {
+      buttonsHtml = `
+        <div class="wa-bot-card-buttons">
+          ${msg.buttons.map(btn => `
+            <button type="button" class="wa-action-btn" onclick="sendWhatsAppQuick('${escapeHtml(btn)}')">
+              <span>${escapeHtml(btn)}</span>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    const titleHtml = msg.title ? `<div class="wa-bot-card-title">${escapeHtml(msg.title)}</div>` : '';
+    const bodyFormatted = formatWaMarkdown(msg.text || '');
+
+    contentHtml = `
+      <div class="wa-bubble wa-bubble-bot">
+        ${titleHtml}
+        <div class="wa-msg-text">${bodyFormatted}</div>
+        ${buttonsHtml}
+        <div class="wa-msg-meta">
+          <span class="wa-msg-time">${msg.time || 'Just now'}</span>
+        </div>
+      </div>
+    `;
   }
 
-  const directLineDomain = `https://${cleanAddress}/flows/euc/v3/directline`;
+  row.innerHTML = contentHtml;
+  feed.appendChild(row);
+}
 
-  // Update preview
-  const previewEl = document.getElementById('previewDirectLineUrl');
-  if (previewEl) {
-    previewEl.textContent = directLineDomain;
+function formatWaMarkdown(text) {
+  if (!text) return '';
+  let str = escapeHtml(text);
+  // *bold*
+  str = str.replace(/\*([^\*]+)\*/g, '<strong>$1</strong>');
+  // _italic_
+  str = str.replace(/_([^_]+)_/g, '<em>$1</em>');
+  // line breaks
+  str = str.replace(/\n/g, '<br>');
+  return str;
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function handleWhatsAppSend() {
+  const input = document.getElementById('waChatInput');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  input.value = '';
+  sendWhatsAppMessage(val);
+}
+
+window.sendWhatsAppQuick = function(text) {
+  sendWhatsAppMessage(text);
+};
+
+window.handleWhatsAppSend = handleWhatsAppSend;
+
+async function sendWhatsAppMessage(text) {
+  const feed = document.getElementById('waMessagesFeed');
+  const typing = document.getElementById('waTypingIndicator');
+
+  // 1. Append user message optimistically
+  const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  appendWhatsAppMessageDOM({
+    sender: 'user',
+    text: text,
+    time: nowTime
+  });
+  scrollWhatsAppToBottom();
+
+  // 2. Show typing indicator
+  if (typing) {
+    typing.style.display = 'flex';
+    scrollWhatsAppToBottom();
   }
-
-  const statusBadge = document.getElementById('agentFlowConnectionStatus');
-  const waSubStatus = document.getElementById('waBotSubStatus');
-  const webchatContainer = document.getElementById('webchat');
-
-  if (statusBadge) statusBadge.textContent = 'Connecting...';
-  if (waSubStatus) waSubStatus.textContent = 'connecting to directline...';
-  showToast(`Initializing DirectLine: ${cleanAddress}...`);
 
   try {
-    // 1. conversationId + token come from YOUR app's backend (never put the secret in the page)
-    const { conversationId, token } = await fetch('/my-backend/start-bot-chat').then(r => r.json());
+    const res = await fetch('/api/whatsapp/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const result = await res.json();
 
-    if (!webchatContainer) return;
-    webchatContainer.innerHTML = '';
+    // Natural delay for typing animation
+    await new Promise(r => setTimeout(r, 600));
 
-    // 2. Render BotFramework WebChat
-    if (window.WebChat && window.WebChat.renderWebChat && window.WebChat.createDirectLine) {
-      const directLineInstance = window.WebChat.createDirectLine({
-        domain: directLineDomain,
-        token: token,
-        conversationId: conversationId
-      });
+    if (typing) typing.style.display = 'none';
 
-      const currentUserId = 'user_' + Math.random().toString(36).substring(2, 8);
+    if (result.success && result.botMessage) {
+      appendWhatsAppMessageDOM(result.botMessage);
+      scrollWhatsAppToBottom();
 
-      window.WebChat.renderWebChat({
-        directLine: directLineInstance,
-        userID: currentUserId
-      }, webchatContainer);
+      // Update right-side Live Discovery & Workflow Candidate Tracker
+      updateDiscoverySyncUI(text, result.botMessage);
 
-      window.webChatInitialized = true;
-      if (statusBadge) statusBadge.textContent = 'Connected (DirectLine)';
-      if (waSubStatus) waSubStatus.textContent = 'online · directline connected';
-      showToast(`Connected to AgentFlow at ${cleanAddress}!`);
-    } else {
-      if (statusBadge) statusBadge.textContent = 'WebChat Loaded';
-      if (waSubStatus) waSubStatus.textContent = 'online · ready';
+      // Refresh app state
+      fetchAppState();
     }
   } catch (err) {
-    console.warn('DirectLine connection warning:', err);
-    if (statusBadge) statusBadge.textContent = 'DirectLine Configured';
-    if (waSubStatus) waSubStatus.textContent = 'online · standby';
-    showToast(`Configured AgentFlow DirectLine address: ${cleanAddress}`);
+    if (typing) typing.style.display = 'none';
+    showToast('WhatsApp simulation error: ' + err.message);
+  }
+}
+
+function updateDiscoverySyncUI(userText, botMsg) {
+  const lower = (userText || '').toLowerCase();
+  const title = (botMsg.title || '').toLowerCase();
+
+  const liveBadge = document.getElementById('waDiscoveryLiveBadge');
+  const wfItems = ['wfItem01', 'wfItem02', 'wfItem03', 'wfItem04', 'wfItem05'];
+  const wfBadge = document.getElementById('waWfRunBadge');
+
+  if (lower.includes('attach') || lower.includes('otrs') || lower.includes('dump') || lower.includes('tickets') || title.includes('workflows created') || title.includes('discovered')) {
+    if (liveBadge) {
+      liveBadge.className = 'c-tag badge-success';
+      liveBadge.textContent = '5 Workflows Discovered \u2713';
+    }
+    wfItems.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('provisioned');
+    });
+    if (wfBadge) {
+      wfBadge.className = 'c-tag badge-info';
+      wfBadge.textContent = 'Ready to Generate \u00B7 WF_Password_Reset_SelfService.psw';
+    }
+    showToast('DiscoveryEdge AI discovered 5 candidate workflows!');
+  } else if (lower.includes('generate') || lower.includes('run') || lower.includes('studio') || title.includes('dispatched')) {
+    if (liveBadge) {
+      liveBadge.className = 'c-tag badge-success';
+      liveBadge.textContent = 'Workflows Generated \u2713';
+    }
+    wfItems.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('provisioned');
+    });
+    if (wfBadge) {
+      wfBadge.className = 'c-tag badge-success';
+      wfBadge.textContent = 'Executed (1.18s) - Job #AE-948102 \u2713';
+    }
+    showToast('Dispatched WF_Password_Reset_SelfService.psw to AE server (t4)!');
+  } else if (lower.includes('reset')) {
+    if (liveBadge) {
+      liveBadge.className = 'c-tag badge-warning';
+      liveBadge.textContent = 'Awaiting Dump \u23F3';
+    }
+    wfItems.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('provisioned');
+    });
+    if (wfBadge) {
+      wfBadge.className = 'c-tag badge-info';
+      wfBadge.textContent = 'Standby (Trigger via WhatsApp)';
+    }
+    showToast('Discovery session reset to initial state.');
+  } else if (lower === 'hi' || lower.startsWith('hi')) {
+    if (liveBadge) {
+      liveBadge.className = 'c-tag badge-warning';
+      liveBadge.textContent = 'Awaiting Ticket Dump \u23F3';
+    }
+  }
+}
+
+function scrollWhatsAppToBottom() {
+  const feed = document.getElementById('waMessagesFeed');
+  if (feed) {
+    feed.scrollTop = feed.scrollHeight;
   }
 }
 

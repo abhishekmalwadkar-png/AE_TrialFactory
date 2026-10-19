@@ -28,56 +28,12 @@
         </div>
       </div>
 
-      <!-- TABS CONTAINER -->
+      <!-- TABS CONTAINER (ONLY WHATSAPP IN SIDE MENU) -->
       <div class="sidebar-nav-wrapper">
-        
-        <!-- Animated Flow Stream Line connecting ONLY Upload -> Simulate -->
-        <div class="flow-section-group">
-          <nav class="sidebar-nav flow-nav">
-            <!-- 1. UPLOAD TAB (IN FLOW) -->
-            <div class="tab-flow-node">
-              <button class="nav-tab active" data-tab="upload" title="Step 1: Upload Dump" id="tabBtnUpload">
-                <div class="tab-icon-wrap">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="17 8 12 3 7 8"/>
-                    <line x1="12" y1="3" x2="12" y2="15"/>
-                  </svg>
-                </div>
-                <span class="tab-label">Upload</span>
-              </button>
-            </div>
-
-            <!-- CLEAN CONNECTOR BETWEEN UPLOAD AND SIMULATE -->
-            <div class="flow-connector" aria-hidden="true">
-              <div class="flow-connector-track">
-                <div class="flow-connector-pulse"></div>
-              </div>
-            </div>
-
-            <!-- 2. SIMULATE TAB (IN FLOW) -->
-            <div class="tab-flow-node">
-              <button class="nav-tab" data-tab="simulate" title="Step 2: Simulate Workflows" id="tabBtnSimulate">
-                <div class="tab-icon-wrap">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 6v6l4 2"/>
-                  </svg>
-                </div>
-                <span class="tab-label">Simulate</span>
-              </button>
-            </div>
-          </nav>
-        </div>
-
-        <!-- DIVIDER (SEPARATES PIPELINE FLOW FROM STANDALONE TABS) -->
-        <div class="sidebar-separator-line"></div>
-
-        <!-- STANDALONE TABS (WHATSAPP KEPT SEPARATE) -->
         <nav class="sidebar-nav standalone-nav">
-          <!-- 3. WHATSAPP TAB (SEPARATE FROM FLOW) -->
+          <!-- WHATSAPP TAB (ONLY ITEM IN SIDEBAR) -->
           <div class="tab-standalone-node">
-            <button class="nav-tab" data-tab="whatsapp" title="WhatsApp Chat" id="tabBtnWhatsapp">
+            <button class="nav-tab active" data-tab="whatsapp" title="WhatsApp Chat" id="tabBtnWhatsapp">
               <div class="tab-icon-wrap whatsapp-badge-wrap">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
@@ -126,7 +82,7 @@
         <div class="center-pipeline-container" id="centerPipelineContainer">
           <div class="center-pipeline-flow">
             <!-- 1. Upload Step -->
-            <button class="pipeline-flow-node active" data-tab="upload" onclick="switchTab('upload')" title="Step 1: Upload Dump">
+            <button class="pipeline-flow-node" data-tab="upload" onclick="switchTab('upload')" title="Step 1: Upload Dump">
               <div class="pipeline-icon-card">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -160,7 +116,7 @@
         <div class="tabs-content-area">
           
           <!-- ================= TAB 1: UPLOAD (FIRST TAB) ================= -->
-          <div class="tab-pane active" id="pane-upload">
+          <div class="tab-pane" id="pane-upload">
             <div class="clean-tab-view upload-tab-wrapper">
               
               <div class="tab-pane-header">
@@ -397,27 +353,27 @@
             </div>
           </div>
 
-          <!-- ================= TAB 3: WHATSAPP (SEPARATE & INTEGRATED WITH DIRECTLINE WEBCHAT) ================= -->
-          <div class="tab-pane" id="pane-whatsapp">
+          <!-- ================= TAB 3: WHATSAPP (SIMULATE TICKET DUMP INTAKE & WORKFLOW DISCOVERY) ================= -->
+          <div class="tab-pane active" id="pane-whatsapp">
             <div class="clean-tab-view whatsapp-tab-wrapper">
               
               <div class="tab-pane-header">
                 <div>
-                  <h3 class="pane-title">WhatsApp Live Chat &amp; AgentFlow DirectLine</h3>
-                  <p class="pane-desc">Chat directly with the AutomationEdge AgentFlow bot using DirectLine WebChat in an authentic WhatsApp interface.</p>
+                  <h3 class="pane-title">WhatsApp Discovery Assistant</h3>
+                  <p class="pane-desc">Send <strong>"Hi"</strong> to start discovery. The bot will ask for your ticket dump and show which candidate workflows can be created.</p>
                 </div>
                 <div class="header-actions">
                   <div class="wa-status-badge">
                     <span class="pulse-indicator"></span>
-                    <span id="agentFlowConnectionStatus">Ready</span>
+                    <span id="waSimStatusBadge">Discovery Ready</span>
                   </div>
                 </div>
               </div>
 
-              <!-- TWO COLUMN LAYOUT: WHATSAPP CHAT INTERFACE ON LEFT SIDE (COMPACT & VISIBLE) -->
+              <!-- TWO COLUMN LAYOUT: WHATSAPP CHAT ON LEFT, DISCOVERED WORKFLOWS TRACKER ON RIGHT -->
               <div class="whatsapp-layout-split">
                 
-                <!-- LEFT SIDE: COMPACT WHATSAPP CHAT SHELL -->
+                <!-- LEFT SIDE: AUTHENTIC WHATSAPP CHAT SHELL -->
                 <div class="whatsapp-left-col">
                   <div class="whatsapp-chat-shell">
                     
@@ -429,61 +385,203 @@
                         </div>
                         <div class="wa-shell-info">
                           <div class="wa-shell-name">
-                            <span>AE AgentFlow Bot</span>
+                            <span>AE DiscoveryEdge Bot</span>
                             <span class="wa-verified-pill" title="Verified Enterprise Bot">✓</span>
                           </div>
-                          <div class="wa-shell-sub" id="waBotSubStatus">online &middot; directline connected</div>
+                          <div class="wa-shell-sub" id="waBotSubStatus">online &middot; discovery &amp; workflow assistant</div>
                         </div>
                       </div>
                       <div class="wa-shell-right">
-                        <button class="wa-tool-btn" title="Reload Chat Session" onclick="connectAgentFlowWebChat()">
+                        <button class="wa-tool-btn" title="Reset Discovery Session" onclick="sendWhatsAppQuick('Reset Demo')">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                        </button>
-                        <button class="wa-tool-btn" title="More options">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
                         </button>
                       </div>
                     </div>
 
-                    <!-- WhatsApp Chat Body with BotFramework WebChat container inside -->
+                    <!-- WhatsApp Chat Body with interactive feed -->
                     <div class="whatsapp-shell-body">
-                      <!-- The required BotFramework WebChat container -->
-                      <div id="webchat" style="height:520px"></div>
+                      
+                      <!-- Security Encryption Pill -->
+                      <div class="wa-encryption-pill">
+                        <span>🔒 Messages and calls are end-to-end encrypted. No one outside of this chat can read them.</span>
+                      </div>
+
+                      <!-- Date stamp -->
+                      <div class="wa-date-pill">
+                        <span>TODAY</span>
+                      </div>
+
+                      <!-- Messages Feed -->
+                      <div class="wa-messages-feed" id="waMessagesFeed">
+                        <!-- Loaded dynamically -->
+                      </div>
+
+                      <!-- Typing Indicator -->
+                      <div class="wa-typing-indicator" id="waTypingIndicator" style="display:none;">
+                        <span class="wa-typing-avatar">🤖</span>
+                        <div class="wa-typing-bubble">
+                          <span class="wa-typing-label">AE DiscoveryEdge Bot is typing</span>
+                          <span class="wa-dot"></span>
+                          <span class="wa-dot"></span>
+                          <span class="wa-dot"></span>
+                        </div>
+                      </div>
+
+                      <!-- Quick Action Prompt Chips Bar -->
+                      <div class="wa-quick-chips-bar" id="waQuickChipsBar">
+                        <button type="button" class="wa-chip-btn wa-chip-primary" onclick="sendWhatsAppQuick('Hi')">
+                          <span>👋 Say "Hi"</span>
+                        </button>
+                        <button type="button" class="wa-chip-btn" onclick="sendWhatsAppQuick('📁 Attach OTRS_Tickets_Overview_v7.xlsx')">
+                          <span>📁 Attach Ticket Dump</span>
+                        </button>
+                        <button type="button" class="wa-chip-btn" onclick="sendWhatsAppQuick('⚡ Generate Workflows in Studio')">
+                          <span>⚡ Generate Workflows</span>
+                        </button>
+                        <button type="button" class="wa-chip-btn wa-chip-reset" onclick="sendWhatsAppQuick('Reset Demo')">
+                          <span>🔄 Reset</span>
+                        </button>
+                      </div>
+
+                      <!-- WhatsApp Footer Input Bar -->
+                      <div class="wa-input-footer">
+                        <div class="wa-input-left-tools">
+                          <button type="button" class="wa-footer-tool-btn" title="Emoji">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                          </button>
+                          <button type="button" class="wa-footer-tool-btn" title="Attach file" onclick="sendWhatsAppQuick('📁 Attach OTRS_Tickets_Overview_v7.xlsx')">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                          </button>
+                        </div>
+                        <input type="text" id="waChatInput" class="wa-chat-input-field" placeholder="Type a message (e.g. Hi)..." autocomplete="off">
+                        <button type="button" id="btnWaChatSend" class="wa-send-round-btn" title="Send Message" onclick="handleWhatsAppSend()">
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"/>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                          </svg>
+                        </button>
+                      </div>
+
                     </div>
 
                   </div>
                 </div>
 
-                <!-- RIGHT SIDE: AGENTFLOW CONFIGURATION & CONTROLS -->
+                <!-- RIGHT SIDE: DISCOVERYEDGE ANALYSIS & WORKFLOW RECOMMENDATIONS TRACKER -->
                 <div class="whatsapp-right-col">
                   
-                  <!-- AGENTFLOW PUBLIC ADDRESS CONFIGURATION BAR -->
-                  <div class="agentflow-config-panel">
-                    <div class="config-input-group">
-                      <label for="agentFlowAddressInput" class="config-label">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8590C" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                        <span>AgentFlow Public Address:</span>
-                      </label>
-                      <div class="config-input-row">
-                        <input type="text" id="agentFlowAddressInput" class="config-text-input clean-full-input" placeholder="Enter AgentFlow public address (e.g. 10.41.5.39:8099)" value="10.41.5.39:8099">
+                  <!-- DISCOVERY ANALYSIS LIVE CARD -->
+                  <div class="wa-candidate-card" id="waDiscoverySyncCard">
+                    <div class="wa-card-top-header">
+                      <div class="candidate-avatar-bubble" style="background: linear-gradient(135deg, #008069 0%, #25D366 100%);">DE</div>
+                      <div class="candidate-header-text">
+                        <h4 class="candidate-title-name">DiscoveryEdge AI Engine</h4>
+                        <p class="candidate-role-sub">IT Ticket Ingestion &amp; Workflow Synthesis</p>
                       </div>
-                      <div style="margin-top: 10px;">
-                        <button class="btn-primary" id="btnConnectAgentFlow" onclick="connectAgentFlowWebChat()" style="width: 100%; justify-content: center;">
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-                          <span>Connect DirectLine</span>
-                        </button>
+                      <span class="c-tag badge-warning" id="waDiscoveryLiveBadge">Awaiting Dump ⏳</span>
+                    </div>
+
+                    <div class="candidate-detail-grid">
+                      <div class="c-detail-item">
+                        <span class="c-detail-label">Ingested Dump File</span>
+                        <strong class="c-detail-val" id="waActiveDumpFile">OTRS_Tickets_Overview_v7.xlsx</strong>
+                      </div>
+                      <div class="c-detail-item">
+                        <span class="c-detail-label">Tickets Analyzed</span>
+                        <span class="c-tag badge-info" id="waTicketsAnalyzedCount">450 Tickets</span>
+                      </div>
+                      <div class="c-detail-item">
+                        <span class="c-detail-label">AI Clustering</span>
+                        <span class="c-tag badge-success">IT Taxonomy Ready</span>
+                      </div>
+                      <div class="c-detail-item">
+                        <span class="c-detail-label">Target Cluster</span>
+                        <strong class="c-detail-val" id="waDispatchedCluster">AE server (t4)</strong>
+                      </div>
+                    </div>
+
+                    <div class="systems-checklist-container">
+                      <h5 class="checklist-title">Workflows That Can Be Created:</h5>
+                      <div class="systems-badge-list">
+                        
+                        <div class="sys-badge-item" id="wfItem01">
+                          <span class="sys-dot"></span>
+                          <div class="sys-meta-col" style="flex:1;">
+                            <span class="sys-name">WF_Password_Reset_SelfService.psw</span>
+                            <div style="font-size:11px; color:var(--text-muted);">Self-Service Domain, Email &amp; Wifi Reset &middot; <strong>98% confidence</strong></div>
+                          </div>
+                          <span class="sys-status" id="wfStatus01">118 hrs/mo</span>
+                        </div>
+
+                        <div class="sys-badge-item" id="wfItem02">
+                          <span class="sys-dot"></span>
+                          <div class="sys-meta-col" style="flex:1;">
+                            <span class="sys-name">WF_Employee_Separation_Offboarding.psw</span>
+                            <div style="font-size:11px; color:var(--text-muted);">Employee Separation &amp; Credential Revocation &middot; <strong>95% confidence</strong></div>
+                          </div>
+                          <span class="sys-status" id="wfStatus02">88 hrs/mo</span>
+                        </div>
+
+                        <div class="sys-badge-item" id="wfItem03">
+                          <span class="sys-dot"></span>
+                          <div class="sys-meta-col" style="flex:1;">
+                            <span class="sys-name">WF_AWS_VPN_Citrix_Access_Provisioning.psw</span>
+                            <div style="font-size:11px; color:var(--text-muted);">AWS VPN &amp; Citrix / Zscaler Network Access &middot; <strong>94% confidence</strong></div>
+                          </div>
+                          <span class="sys-status" id="wfStatus03">78 hrs/mo</span>
+                        </div>
+
+                        <div class="sys-badge-item" id="wfItem04">
+                          <span class="sys-dot"></span>
+                          <div class="sys-meta-col" style="flex:1;">
+                            <span class="sys-name">WF_Software_Installation_Docker_VM.psw</span>
+                            <div style="font-size:11px; color:var(--text-muted);">Software Setup, Docker Desktop &amp; VM &middot; <strong>91% confidence</strong></div>
+                          </div>
+                          <span class="sys-status" id="wfStatus04">72 hrs/mo</span>
+                        </div>
+
+                        <div class="sys-badge-item" id="wfItem05">
+                          <span class="sys-dot"></span>
+                          <div class="sys-meta-col" style="flex:1;">
+                            <span class="sys-name">WF_ActiveDirectory_User_Provisioning.psw</span>
+                            <div style="font-size:11px; color:var(--text-muted);">AD &amp; Shared Repository Access Grant &middot; <strong>93% confidence</strong></div>
+                          </div>
+                          <span class="sys-status" id="wfStatus05">56 hrs/mo</span>
+                        </div>
+
                       </div>
                     </div>
                   </div>
 
-                  <!-- DIRECTLINE CONNECTION INFO CARD -->
+                  <!-- WORKFLOW AUTOMATION RUN RECEIPT CARD -->
                   <div class="wa-info-card">
-                    <h4>DirectLine WebChat Features</h4>
-                    <ul class="wa-features-list">
-                      <li><span>🔒</span><span>Token fetched securely via <code>/my-backend/start-bot-chat</code></span></li>
-                      <li><span>💬</span><span>Bi-directional streaming chat with AutomationEdge EUC workflows</span></li>
-                      <li><span>⚡</span><span>Instant responses with Process Studio bot triggers</span></li>
-                    </ul>
+                    <h4>AutomationEdge Workflow Dispatch</h4>
+                    <div class="wa-wf-meta-box">
+                      <div class="wa-wf-row">
+                        <span class="wa-wf-lbl">Top Dispatched Workflow:</span>
+                        <code class="wa-wf-code">WF_Password_Reset_SelfService.psw</code>
+                      </div>
+                      <div class="wa-wf-row">
+                        <span class="wa-wf-lbl">Process Studio Engine:</span>
+                        <span class="wa-wf-val">AutomationEdge v7.4.2</span>
+                      </div>
+                      <div class="wa-wf-row">
+                        <span class="wa-wf-lbl">Execution Status:</span>
+                        <span class="c-tag badge-info" id="waWfRunBadge">Standby (Trigger via WhatsApp)</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- DIRECTLINE / AGENTFLOW ADDRESS (OPTIONAL) -->
+                  <div class="agentflow-config-panel" style="padding: 12px 16px;">
+                    <details>
+                      <summary style="cursor: pointer; font-size: 12.5px; font-weight: 700; color: var(--text-muted);">
+                        <span>⚙️ AgentFlow DirectLine Endpoint (Advanced)</span>
+                      </summary>
+                      <div style="margin-top: 10px;">
+                        <input type="text" id="agentFlowAddressInput" class="config-text-input clean-full-input" placeholder="e.g. 10.41.5.39:8099" value="10.41.5.39:8099" style="font-size: 12px;">
+                      </div>
+                    </details>
                   </div>
 
                 </div>
